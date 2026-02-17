@@ -1,8 +1,25 @@
-Age,All people aged 16 and over,No: Not trans and does not have a trans history,Yes: Trans or has a trans history,"Not answered
-"
-All people aged 16 and over,4548589,4259386,19973,269230
-16 - 24,582485,537626,9208,35652
-25 - 34,694173,661099,5205,27873
-35 - 49,1009763,965691,2558,41517
-50 - 64,1171558,1106202,1811,63545
-65 and over,1090603,988768,1190,100643
+age,response,n
+All people aged 16 and over,Total,4548589
+All people aged 16 and over,No: Not trans and does not have a trans history,4259386
+All people aged 16 and over,Yes: Trans or has a trans history,19973
+All people aged 16 and over,Not answered,269230
+16 - 24,Total,582485
+16 - 24,No: Not trans and does not have a trans history,537626
+16 - 24,Yes: Trans or has a trans history,9208
+16 - 24,Not answered,35652
+25 - 34,Total,694173
+25 - 34,No: Not trans and does not have a trans history,661099
+25 - 34,Yes: Trans or has a trans history,5205
+25 - 34,Not answered,27873
+35 - 49,Total,1009763
+35 - 49,No: Not trans and does not have a trans history,965691
+35 - 49,Yes: Trans or has a trans history,2558
+35 - 49,Not answered,41517
+50 - 64,Total,1171558
+50 - 64,No: Not trans and does not have a trans history,1106202
+50 - 64,Yes: Trans or has a trans history,1811
+50 - 64,Not answered,63545
+65 and over,Total,1090603
+65 and over,No: Not trans and does not have a trans history,988768
+65 and over,Yes: Trans or has a trans history,1190
+65 and over,Not answered,100643

@@ -1,19 +1,109 @@
-Sex,Age,All people aged 16 and over,Heterosexual/Straight,Gay or Lesbian,Bisexual,Other sexual orientation,Not answered
-All people aged 16 and over,Total,4548589,3993864,80104,80256,23503,370858
-All people aged 16 and over,16 - 24,582485,468347,18495,37413,8626,49604
-All people aged 16 and over,25 - 34,694173,597863,22904,25700,7745,39961
-All people aged 16 and over,35 - 49,1009763,911559,20898,11643,4620,61047
-All people aged 16 and over,50 - 64,1171558,1063273,14050,4217,1873,88145
-All people aged 16 and over,65 and over,1090603,952826,3757,1280,639,132101
-Female,Total,2362957,2064655,33817,58263,15260,190961
-Female,16 - 24,290995,222879,9215,28327,6143,24430
-Female,25 - 34,354756,302888,9201,19082,5119,18466
-Female,35 - 49,518350,469475,8619,8186,2770,29300
-Female,50 - 64,603675,551219,5518,2198,921,43819
-Female,65 and over,595180,518194,1261,470,307,74946
-Male,Total,2185633,1929213,46285,21993,8243,179899
-Male,16 - 24,291490,245468,9279,9086,2483,25174
-Male,25 - 34,339421,294975,13703,6622,2622,21495
-Male,35 - 49,491416,442084,12279,3456,1850,31747
-Male,50 - 64,567881,512054,8532,2019,952,44326
-Male,65 and over,495423,434632,2494,810,332,57155
+sex,age,response,n
+All,Total,Total,4548589
+All,Total,Heterosexual/Straight,3993864
+All,Total,Gay or Lesbian,80104
+All,Total,Bisexual,80256
+All,Total,Other sexual orientation,23503
+All,Total,Not answered,370858
+All,16 - 24,Total,582485
+All,16 - 24,Heterosexual/Straight,468347
+All,16 - 24,Gay or Lesbian,18495
+All,16 - 24,Bisexual,37413
+All,16 - 24,Other sexual orientation,8626
+All,16 - 24,Not answered,49604
+All,25 - 34,Total,694173
+All,25 - 34,Heterosexual/Straight,597863
+All,25 - 34,Gay or Lesbian,22904
+All,25 - 34,Bisexual,25700
+All,25 - 34,Other sexual orientation,7745
+All,25 - 34,Not answered,39961
+All,35 - 49,Total,1009763
+All,35 - 49,Heterosexual/Straight,911559
+All,35 - 49,Gay or Lesbian,20898
+All,35 - 49,Bisexual,11643
+All,35 - 49,Other sexual orientation,4620
+All,35 - 49,Not answered,61047
+All,50 - 64,Total,1171558
+All,50 - 64,Heterosexual/Straight,1063273
+All,50 - 64,Gay or Lesbian,14050
+All,50 - 64,Bisexual,4217
+All,50 - 64,Other sexual orientation,1873
+All,50 - 64,Not answered,88145
+All,65 and over,Total,1090603
+All,65 and over,Heterosexual/Straight,952826
+All,65 and over,Gay or Lesbian,3757
+All,65 and over,Bisexual,1280
+All,65 and over,Other sexual orientation,639
+All,65 and over,Not answered,132101
+Female,Total,Total,2362957
+Female,Total,Heterosexual/Straight,2064655
+Female,Total,Gay or Lesbian,33817
+Female,Total,Bisexual,58263
+Female,Total,Other sexual orientation,15260
+Female,Total,Not answered,190961
+Female,16 - 24,Total,290995
+Female,16 - 24,Heterosexual/Straight,222879
+Female,16 - 24,Gay or Lesbian,9215
+Female,16 - 24,Bisexual,28327
+Female,16 - 24,Other sexual orientation,6143
+Female,16 - 24,Not answered,24430
+Female,25 - 34,Total,354756
+Female,25 - 34,Heterosexual/Straight,302888
+Female,25 - 34,Gay or Lesbian,9201
+Female,25 - 34,Bisexual,19082
+Female,25 - 34,Other sexual orientation,5119
+Female,25 - 34,Not answered,18466
+Female,35 - 49,Total,518350
+Female,35 - 49,Heterosexual/Straight,469475
+Female,35 - 49,Gay or Lesbian,8619
+Female,35 - 49,Bisexual,8186
+Female,35 - 49,Other sexual orientation,2770
+Female,35 - 49,Not answered,29300
+Female,50 - 64,Total,603675
+Female,50 - 64,Heterosexual/Straight,551219
+Female,50 - 64,Gay or Lesbian,5518
+Female,50 - 64,Bisexual,2198
+Female,50 - 64,Other sexual orientation,921
+Female,50 - 64,Not answered,43819
+Female,65 and over,Total,595180
+Female,65 and over,Heterosexual/Straight,518194
+Female,65 and over,Gay or Lesbian,1261
+Female,65 and over,Bisexual,470
+Female,65 and over,Other sexual orientation,307
+Female,65 and over,Not answered,74946
+Male,Total,Total,2185633
+Male,Total,Heterosexual/Straight,1929213
+Male,Total,Gay or Lesbian,46285
+Male,Total,Bisexual,21993
+Male,Total,Other sexual orientation,8243
+Male,Total,Not answered,179899
+Male,16 - 24,Total,291490
+Male,16 - 24,Heterosexual/Straight,245468
+Male,16 - 24,Gay or Lesbian,9279
+Male,16 - 24,Bisexual,9086
+Male,16 - 24,Other sexual orientation,2483
+Male,16 - 24,Not answered,25174
+Male,25 - 34,Total,339421
+Male,25 - 34,Heterosexual/Straight,294975
+Male,25 - 34,Gay or Lesbian,13703
+Male,25 - 34,Bisexual,6622
+Male,25 - 34,Other sexual orientation,2622
+Male,25 - 34,Not answered,21495
+Male,35 - 49,Total,491416
+Male,35 - 49,Heterosexual/Straight,442084
+Male,35 - 49,Gay or Lesbian,12279
+Male,35 - 49,Bisexual,3456
+Male,35 - 49,Other sexual orientation,1850
+Male,35 - 49,Not answered,31747
+Male,50 - 64,Total,567881
+Male,50 - 64,Heterosexual/Straight,512054
+Male,50 - 64,Gay or Lesbian,8532
+Male,50 - 64,Bisexual,2019
+Male,50 - 64,Other sexual orientation,952
+Male,50 - 64,Not answered,44326
+Male,65 and over,Total,495423
+Male,65 and over,Heterosexual/Straight,434632
+Male,65 and over,Gay or Lesbian,2494
+Male,65 and over,Bisexual,810
+Male,65 and over,Other sexual orientation,332
+Male,65 and over,Not answered,57155
