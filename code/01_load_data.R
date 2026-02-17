@@ -16,3 +16,16 @@ sexual_age_ni <- read_csv("data/sexual_age_ni.csv")
 sexual_genmod_ew <- read_csv("data/sexual_genmod_ew.csv")
 population_ew <- read_csv("data/population_ew.csv")
 
+
+## Additional data --------------------------------------------------------
+
+general_health_ew <- read_csv("data/additional_ew/general_health_ew.csv")
+
+
+
+
+
+
+
+
+

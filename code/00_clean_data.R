@@ -102,3 +102,16 @@ population_ew <- read_xlsx("raw-data/England and Wales/lsoa_population.xlsx", sk
     population = `Usual resident population, 2021`
   )
 write_csv(population_ew, "data/population_ew.csv")
+
+# General health
+general_health_ew <- read_csv("raw-data/England and Wales/Sexual orientation/sexual_general_health.csv") |>
+  select(
+    area_code = `Lower tier local authorities Code`,
+    area_name = `Lower tier local authorities`,
+    sexual_orientation = `Sexual orientation (6 categories)`,
+    health = `General health (6 categories)`,
+    n = Observation
+  ) |>
+  left_join(population_ew, by = c("area_code", "area_name")) |>
+  mutate(percentage = 100 * n / population)
+write_csv(general_health_ew, "data/additional_ew/general_health_ew.csv")

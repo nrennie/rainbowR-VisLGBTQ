@@ -1,65 +1,186 @@
 library(tidyverse)
 library(ggview)
 library(ggbeeswarm)
-
-plot_data <- sexual_general_health |>
-  select(`Sexual orientation (6 categories)`,
-`General health (6 categories)`, Observation) |>
-  rename(Orientation = `Sexual orientation (6 categories)`,
-         Health = `General health (6 categories)`)
+library(ggtext)
 
 
-# Initial heatmap ---------------------------------------------------------
+# Data wrangling ----------------------------------------------------------
 
-heatmap_data <- plot_data |>
-  group_by(Orientation, Health) |>
-  summarise(n = sum(Observation))
+# Perc of population in bad/very bad health by sexual orientation
+plot_data <- general_health_ew |>
+  group_by(area_name, sexual_orientation) |>
+  mutate(population = sum(n)) |>
+  ungroup() |>
+  filter(
+    health %in% c("Bad health", "Very bad health"),
+    sexual_orientation != "Does not apply"
+  ) |>
+  mutate(percentage = 100 * n / population) |>
+  group_by(area_name, sexual_orientation) |>
+  summarise(percentage = sum(percentage)) |>
+  ungroup()
 
-ggplot() +
-  geom_tile(
-    data = heatmap_data,
-    mapping = aes(x = Orientation, y = Health, fill = n)
+
+# Variables ---------------------------------------------------------------
+
+highlight_col <- "#ff6b00"
+bg_col <- "white"
+
+
+# Plot --------------------------------------------------------------------
+
+# V1 ----
+ggplot(
+  data = plot_data,
+  mapping = aes(x = percentage, y = sexual_orientation)
+) +
+  geom_quasirandom() +
+  canvas(
+    width = 5, height = 7,
+    units = "in", bg = bg_col,
+    dpi = 300
   )
 
-
-# Percentage within categories --------------------------------------------
-
-heatmap_data <- plot_data |>
-  group_by(Orientation) |>
-  mutate(n_orient = sum(Observation)) |>
-  group_by(Orientation, Health) |>
-  mutate(n_obs = sum(Observation)) |>
-  select(-Observation) |>
-  distinct() |>
-  mutate(avg_perc = n_obs / n_orient) |>
-  drop_na()
-
-
-ggplot() +
-  geom_tile(
-    data = heatmap_data,
-    mapping = aes(x = Orientation, y = Health, fill = avg_perc)
+# V2 ----
+ggplot(
+  data = plot_data,
+  mapping = aes(x = percentage, y = sexual_orientation)
+) +
+  geom_quasirandom(
+    colour = highlight_col,
+    size = 0.7
+  ) +
+  theme_minimal() +
+  canvas(
+    width = 5, height = 7,
+    units = "in", bg = bg_col,
+    dpi = 300
   )
 
-# Sort health levels
-heatmap_data$Health <- factor(heatmap_data$Health, levels = rev(c(
-  "Very good health", "Good health", "Fair health", "Bad health", "Very bad health", "Does not apply"
-)))
-
-ggplot() +
-  geom_tile(
-    data = heatmap_data,
-    mapping = aes(x = Orientation, y = Health, fill = avg_perc)
+# V3 ----
+ggplot(
+  data = plot_data,
+  mapping = aes(x = percentage, y = sexual_orientation)
+) +
+  geom_quasirandom(
+    colour = highlight_col,
+    size = 0.7
+  ) +
+  labs(
+    title = "Title",
+    subtitle = "Percentage of population reporting bad or very bad health by sexual orientation",
+    caption = "**Source**: General health by sexual orientation from Office for National Statistics<br>**Graphic**: Nicola Rennie",
+    x = "Percentage", y = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title.position = "plot",
+    plot.caption.position = "plot"
+  ) +
+  canvas(
+    width = 5, height = 7,
+    units = "in", bg = bg_col,
+    dpi = 300
   )
 
-# colour
+# V4 ----
+ggplot(
+  data = plot_data,
+  mapping = aes(x = percentage, y = sexual_orientation)
+) +
+  geom_quasirandom(
+    colour = highlight_col,
+    size = 0.7
+  ) +
+  labs(
+    title = "Title",
+    subtitle = "Percentage of population in each local authority reporting bad or very bad health by sexual orientation",
+    caption = "**Source**: General health by sexual orientation from Office for National Statistics<br>**Graphic**: Nicola Rennie",
+    x = "Percentage", y = NULL
+  ) +
+  scale_x_continuous(limits = c(0, 25), expand = expansion(0, 0)) +
+  scale_y_discrete(expand = expansion(add = c(0.5, 0.75))) +
+  theme_minimal() +
+  theme(
+    plot.title.position = "plot",
+    plot.caption.position = "plot",
+    plot.title = element_textbox_simple(face = "bold", margin = margin(b = 5)),
+    plot.subtitle = element_textbox_simple(margin = margin(b = 5)),
+    plot.caption = element_textbox_simple(margin = margin(t = 5)),
+    axis.title.x = element_text(hjust = 1, size = rel(0.9)),
+    plot.margin = margin(10, 15, 10, 10)
+  ) +
+  canvas(
+    width = 5, height = 7,
+    units = "in", bg = bg_col,
+    dpi = 300
+  )
+
+# V5 ----
+# Want to order categories by median value
+# Want to add a line showing median value
+# Want to wrap long category labels
+
+## Summary data ----
+plot_data$sexual_orientation <- str_wrap(plot_data$sexual_orientation, 12)
+summary_data <- plot_data |>
+  group_by(sexual_orientation) |>
+  summarise(med_perc = median(percentage)) |>
+  arrange(med_perc)
+plot_data$sexual_orientation <- factor(plot_data$sexual_orientation,
+  levels = summary_data$sexual_orientation
+)
+summary_data$sexual_orientation <- factor(summary_data$sexual_orientation,
+  levels = summary_data$sexual_orientation
+)
+
+## Plot ----
+ggplot(
+  data = plot_data,
+  mapping = aes(x = percentage, y = 0)
+) +
+  geom_quasirandom(
+    colour = highlight_col,
+    size = 0.7
+  ) +
+  geom_segment(
+    data = summary_data,
+    mapping = aes(x = med_perc, y = -0.4, yend = 0.4),
+    colour = "black",
+    linewidth = 1
+  ) +
+  facet_wrap(vars(sexual_orientation), ncol = 1, strip.position = "left") +
+  labs(
+    title = "Title",
+    subtitle = "Percentage of population in each local authority reporting bad or very bad health by sexual orientation",
+    caption = "**Source**: General health by sexual orientation from Office for National Statistics<br>**Graphic**: Nicola Rennie",
+    x = "Percentage", y = NULL
+  ) +
+  scale_x_continuous(limits = c(0, 25), expand = expansion(0, 0)) +
+  scale_y_continuous(expand = expansion(0.05, 0.05), breaks = 0) +
+  theme_minimal() +
+  theme(
+    plot.title.position = "plot",
+    plot.caption.position = "plot",
+    plot.title = element_textbox_simple(face = "bold", margin = margin(b = 5)),
+    plot.subtitle = element_textbox_simple(margin = margin(b = 5)),
+    plot.caption = element_textbox_simple(margin = margin(t = 5)),
+    axis.title.x = element_text(hjust = 1, size = rel(0.9)),
+    axis.text.y = element_blank(),
+    strip.text.y.left = element_text(angle = 0, hjust = 1),
+    panel.grid.minor.y = element_blank(),
+    plot.margin = margin(10, 15, 10, 10)
+  ) +
+  canvas(
+    width = 5, height = 7,
+    units = "in", bg = bg_col,
+    dpi = 300
+  ) -> p
 
 
+# Save --------------------------------------------------------------------
 
-
-
-
-
-
-
-
+save_ggplot(
+  plot = p,
+  file = "example-plots/beeswarm.png"
+)
