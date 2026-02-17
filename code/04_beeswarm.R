@@ -67,7 +67,7 @@ ggplot(
     size = 0.7
   ) +
   labs(
-    title = "Title",
+    title = "People identifying as an *other sexual orientation* most likely to report bad or very bad health",
     subtitle = "Percentage of population reporting bad or very bad health by sexual orientation",
     caption = "**Source**: General health by sexual orientation from Office for National Statistics<br>**Graphic**: Nicola Rennie",
     x = "Percentage", y = NULL
@@ -93,7 +93,7 @@ ggplot(
     size = 0.7
   ) +
   labs(
-    title = "Title",
+    title = "People identifying as an *other sexual orientation* most likely to report bad or very bad health",
     subtitle = "Percentage of population in each local authority reporting bad or very bad health by sexual orientation",
     caption = "**Source**: General health by sexual orientation from Office for National Statistics<br>**Graphic**: Nicola Rennie",
     x = "Percentage", y = NULL
@@ -151,7 +151,7 @@ ggplot(
   ) +
   facet_wrap(vars(sexual_orientation), ncol = 1, strip.position = "left") +
   labs(
-    title = "Title",
+    title = "People identifying as an *other sexual orientation* most likely to report bad or very bad health",
     subtitle = "Percentage of population in each local authority reporting bad or very bad health by sexual orientation",
     caption = "**Source**: General health by sexual orientation from Office for National Statistics<br>**Graphic**: Nicola Rennie",
     x = "Percentage", y = NULL

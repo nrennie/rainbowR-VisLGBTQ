@@ -4,6 +4,11 @@ library(ggbeeswarm)
 library(ggtext)
 
 
+# Load data ---------------------------------------------------------------
+
+general_health_ew <- read_csv("data/additional_ew/general_health_ew.csv")
+
+
 # Data wrangling ----------------------------------------------------------
 
 ## Perc of population in bad/very bad health by sexual orientation ----
@@ -58,7 +63,7 @@ ggplot(
   ) +
   facet_wrap(vars(sexual_orientation), ncol = 1, strip.position = "left") +
   labs(
-    title = "Title",
+    title = "People identifying as an *other sexual orientation* most likely to report bad or very bad health",
     subtitle = "Percentage of population in each local authority reporting bad or very bad health by sexual orientation",
     caption = "**Source**: General health by sexual orientation from Office for National Statistics<br>**Graphic**: Nicola Rennie",
     x = "Percentage", y = NULL

@@ -18,7 +18,11 @@
 
 #### Sexual orientation 
 
-* Sexual orientation by age 
+* Sexual orientation by age
+
+#### Local Government Districts
+
+* [OSNI Open Data - Largescale Boundaries - Local Government Districts](https://admin.opendatani.gov.uk/dataset/osni-open-data-largescale-boundaries-local-government-districts-2012)
 
 ### England & Wales 
 
