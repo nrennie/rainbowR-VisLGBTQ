@@ -1,0 +1,156 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Visualising the UK’s LGBTQ+ population",
+    "section": "",
+    "text": "In 2021/2022 the UK censuses represented LGBTQ+ people in new ways. The aim of this workshop is to introduce participants to this data and encourage them to produce visualisations utilising it. This workshop is ran in association with the University of Edinburgh’s Gender and Sexuality Data Lab and is heavily inspired by Tidy Tuesday. In the first part of this workshop queer feminist researcher and educator, Kirstie Ken English, will explain how LGBTQ+ populations were represented in the UK censuses and discuss the data available. In the second half data visualisation expert, Nicola Rennie, will walk participants through the code of an example visualisation of the census data. This workshop is a jumping off activity as participants will be prompted to design their own visualisations and share them in the weeks following the conference on Bluesky and LinkedIn via the #VisLGBTQ. Alongside discussions of the value of visualisations the workshop will be a space to recognise the limitations in how LGBTQ+ census data has been shared. Data sets and example code will be provided to all participants.\nMore information on the conference website."
+  },
+  {
+    "objectID": "index.html#contributing",
+    "href": "index.html#contributing",
+    "title": "Visualising the UK’s LGBTQ+ population",
+    "section": "Contributing",
+    "text": "Contributing\nIf you can’t attend the workshop but still want to take part, then between the 25th February and 13th March you can create a visualisation using the data in the data folder. Your visualisations can include other variables and use data from any of the three UK censuses. Post your visualisation on social media using the hashtag #VisLGBTQ and share your code!\nThe data available is currently quite limited so feel free to use the hashtag to discuss said limitations or outline visualisations you would do if more data was available.\nIf you don’t feel comfortable sharing your visualisation on social media, you can make a pull request to add it to the contributions folder in the GitHub repository. Create a new subfolder inside contributions which contains an image file with your chart, code, and a README if you want to include any additional commentary."
+  },
+  {
+    "objectID": "examples/map-orientation-ni.html",
+    "href": "examples/map-orientation-ni.html",
+    "title": "Map of sexual orientation in Northern Ireland",
+    "section": "",
+    "text": "Load required packages:\nlibrary(tidyverse)\nlibrary(ggview)\nlibrary(ggtext)\nlibrary(geojsonsf)\nlibrary(sf) # Needed for joining data"
+  },
+  {
+    "objectID": "examples/map-orientation-ni.html#prepare-the-data",
+    "href": "examples/map-orientation-ni.html#prepare-the-data",
+    "title": "Map of sexual orientation in Northern Ireland",
+    "section": "Prepare the data",
+    "text": "Prepare the data\nLoad the data:\n\nsexual_age_ni &lt;- read_csv(\"data/sexual_age_ni.csv\")\nni_sf &lt;- geojson_sf(\"data/spatial-data/osni_open_data_largescale_boundaries_local_government_districts_2012.geojson\")\n\nPrepare data for plotting:\n\nplot_data &lt;- sexual_age_ni |&gt;\n  filter(\n    area_name != \"Northern Ireland\",\n    age == \"Usual residents aged 16 and over\",\n    sexual_orientation == \"Gay, lesbian, bisexual, other sexual orientation\"\n  )\n\n# Join to spatial data\nmap_data &lt;- ni_sf |&gt;\n  select(LGDCode, geometry) |&gt;\n  left_join(plot_data, by = c(\"LGDCode\" = \"area_code\"))"
+  },
+  {
+    "objectID": "examples/map-orientation-ni.html#plot-preparation",
+    "href": "examples/map-orientation-ni.html#plot-preparation",
+    "title": "Map of sexual orientation in Northern Ireland",
+    "section": "Plot preparation",
+    "text": "Plot preparation\nSave colours as variables:\n\ntext_col &lt;- \"#ffffd9\"\nbg_col &lt;- \"#051338\"\n\n\n\n\n\n\n\nTipTip with Title\n\n\n\nUse ggview to preview your plots at the desired size and resolution by adding the following to the end of your ggplot2 call:\n\n+\n  canvas(\n    width = 5, height = 7,\n    units = \"in\", bg = bg_col,\n    dpi = 300\n  )"
+  },
+  {
+    "objectID": "examples/map-orientation-ni.html#create-the-map",
+    "href": "examples/map-orientation-ni.html#create-the-map",
+    "title": "Map of sexual orientation in Northern Ireland",
+    "section": "Create the map",
+    "text": "Create the map\n\nVersion 1\n\nggplot() +\n  geom_sf(\n    data = map_data,\n    mapping = aes(fill = percentage)\n  )\n\n\n\n\n\n\n\n\n\n\nVersion 2\n\nggplot() +\n  geom_sf(\n    data = map_data,\n    mapping = aes(fill = percentage),\n    colour = text_col,\n    linewidth = 0.7\n  ) +\n  scale_fill_distiller(\n    palette = \"YlGnBu\", direction = 1,\n    name = str_wrap(\"Percentage of population identifying as *gay, lesbian, bisexual, or other sexual orientation*\", 20)\n  ) +\n  theme_void() +\n  theme(\n    text = element_text(colour = text_col),\n    legend.position = \"bottom\",\n    legend.title.position = \"top\",\n    legend.key.width = unit(4, \"lines\")\n  ) \n\n\n\n\n\n\n\n\n\n\nVersion 3\n\nggplot() +\n  geom_sf(\n    data = map_data,\n    mapping = aes(fill = percentage),\n    colour = text_col,\n    linewidth = 0.7\n  ) +\n  scale_fill_distiller(\n    palette = \"YlGnBu\", direction = 1,\n    name = str_wrap(\"Percentage of population identifying as 'gay, lesbian, bisexual, or other sexual orientation'\", 65)\n  ) +\n  labs(\n    title = \"Belfast has highest percentage of people identifying as 'gay, lesbian, bisexual, or other sexual orientation'\",\n    subtitle = \"Percentage of usual residents aged 16 and over, identifying as 'gay, lesbian, bisexual, or other sexual orientation' by Local Government District\",\n    caption = \"**Source**: Sexual orientation by broad age bands from Northern Ireland Statistics and Research Agency&lt;br&gt;**Graphic**: Nicola Rennie\"\n  ) +\n  theme_void() +\n  theme(\n    text = element_text(colour = text_col),\n    legend.position = \"bottom\",\n    legend.title.position = \"top\",\n    legend.key.width = unit(4.6, \"lines\"),\n    plot.title.position = \"plot\",\n    plot.caption.position = \"plot\",\n    plot.title = element_textbox_simple(face = \"bold\", margin = margin(b = 15)),\n    plot.subtitle = element_textbox_simple(margin = margin(b = 5)),\n    plot.caption = element_textbox_simple(margin = margin(t = 10)),\n    plot.margin = margin(10, 15, 10, 15)\n  )"
+  },
+  {
+    "objectID": "examples/map-orientation-ni.html#save-the-plot",
+    "href": "examples/map-orientation-ni.html#save-the-plot",
+    "title": "Map of sexual orientation in Northern Ireland",
+    "section": "Save the plot",
+    "text": "Save the plot\n\nggsave(\"map.png\",\n  bg = bg_col,\n  height = 7, width = 5\n)\n\nIf you’ve used ggview, then assign the plot to a variable e.g. p and then do:\n\nsave_ggplot(\n  plot = p,\n  file = \"map.png\"\n)"
+  },
+  {
+    "objectID": "examples/barchart-genmod-and-sex.html",
+    "href": "examples/barchart-genmod-and-sex.html",
+    "title": "Bar chart of gender modality and sex",
+    "section": "",
+    "text": "Inputting the data\nONS had not released cross sectional data for gender modality by sex but did produce a table on these variables, which is available here.\nThe following code indicates how I input this into R. This could be used to create bar plots of any two categorical variables.\n\nlibrary(tidyverse)\nsex &lt;- c(\"Male\", \"Female\", \"Male\", \"Female\")\ngenmod &lt;- c(\"Trans Man\", \"Trans Man\", \"Trans Woman\", \"Trans Woman\")\nfrequencies &lt;- c(32695, 15740, 16100, 31470)\n\nsex_data &lt;- rep(sex, times = frequencies)\ngenmod_data &lt;- rep(genmod, times = frequencies)\n\ngenmodsex &lt;- data.frame(sex = sex_data, genmod = genmod_data)\n\ntable(genmodsex$sex, genmodsex$genmod)\n\n        \n         Trans Man Trans Woman\n  Female     15740       31470\n  Male       32695       16100\n\n\n\n\nVisualising the data\nI then created a basic bar chart. This bar chart indicates that despite the use of documented or “legal sex” guidance in the 2021 census at least 67% of people who indicated they were trans men or women in the census responded to the sex question based on how they live.\n\ngenmodsex %&gt;%\n  ggplot(aes(genmod, fill = sex)) +\n  geom_bar(position = \"dodge\") +\n  labs(\n    title = \"How trans men & women responded to the sex question in England & Wales\",\n    x = \"Gender\",\n    y = \"Count\",\n    caption = \"2021 Census of England & Wales (ONS, 2023)\"\n  ) +\n  scale_fill_manual(\"Sex\", values = c(\"Female\" = \"#16552f\", \"Male\" = \"#678D75\")) +\n  theme(\n    panel.background = element_rect(fill = \"transparent\", color = NA),\n    plot.background = element_rect(fill = \"transparent\", color = NA),\n    panel.grid.major = element_blank(),\n    panel.grid.minor = element_blank(),\n    plot.title = element_text(face = \"bold\", hjust = 0.25)\n  )"
+  },
+  {
+    "objectID": "data.html",
+    "href": "data.html",
+    "title": "Data",
+    "section": "",
+    "text": "The data has been pre-processed to enable you to focus on visualisation instead of data cleaning."
+  },
+  {
+    "objectID": "data.html#pre-processing",
+    "href": "data.html#pre-processing",
+    "title": "Data",
+    "section": "Pre-processing",
+    "text": "Pre-processing\nThe raw data downloaded from census websites can be found in the data/raw-data folder, and the README explains where each data set came from.\nThe raw data was processed to create the clean data sets in the data folder. The processing code can be found in data/00_clean_data.R."
+  },
+  {
+    "objectID": "data.html#loading-data",
+    "href": "data.html#loading-data",
+    "title": "Data",
+    "section": "Loading data",
+    "text": "Loading data\nYou can load the main, pre-cleaned data sets using:\n\nlibrary(readr)\n\n# Scotland ----------------------------------------------------------------\n\nsexual_age_scot &lt;- read_csv(\"data/sexual_age_scot.csv\")\ngenmod_age_scot &lt;- read_csv(\"data/genmod_age_scot.csv\")\n\n\n# Northern Ireland --------------------------------------------------------\n\nsexual_age_ni &lt;- read_csv(\"data/sexual_age_ni.csv\")\n\n\n# England and Wales -------------------------------------------------------\n\nsexual_genmod_ew &lt;- read_csv(\"data/sexual_genmod_ew.csv\")\npopulation_ew &lt;- read_csv(\"data/population_ew.csv\")\n\n\n## Additional data --------------------------------------------------------\n\ngeneral_health_ew &lt;- read_csv(\"data/additional_ew/general_health_ew.csv\")"
+  },
+  {
+    "objectID": "data.html#raw-data-sources",
+    "href": "data.html#raw-data-sources",
+    "title": "Data",
+    "section": "Raw data sources",
+    "text": "Raw data sources\n\nScotland\n\nSexual orientation\n\nSexual orientation by age (5 groups)\n\n\n\nGender modality\n\nGender modality by age (5 groups)\n\n\n\n\nNorthern Ireland\n\nSexual orientation\n\nSexual orientation by age\n\n\n\n\nEngland & Wales\n\nSexual orientation\n\nSexual orientation\nSexual orientation by age & sex\nSexual orientation by disability\nSexual orientation detailed geography\nSexual orientation by dwelling type\nSexual orientation by economic activity\nSexual orientation by ethnic group\nSexual orientation by general health\nSexual orientation by highest qualification\nSexual orientation by household composition\nSexual orientation by industry\nSexual orientation by legal partnership\nSexual orientation by NS-SEC\nSexual orientation by occupancy rating(rooms)\nSexual orientation by occupation\nSexual orientation by religion\nSexual orientation by tenure\nSexual orientation by unpaid carer status\nSexual orientation further personal characteristics:\n\nEthnic group by sexual orientation, age, and sex: England and Wales (combined)\nEthnic group by sexual orientation, age, and sex: England and Wales (separate)\nSexual orientation by ethnic group, age, and sex: England and Wales (combined)\nReligion by sexual orientation, age, and sex: England and Wales (combined)\nReligion by sexual orientation, age, and sex: England and Wales (separate)\nSexual orientation by religion, age, and sex: England and Wales (combined)\nGeneral health by sexual orientation, age, and sex: England and Wales (combined)\nGeneral health by sexual orientation, age, and sex: England and Wales (separate)\nSexual orientation by general health, age, and sex: England and Wales (combined)\nDisability by sexual orientation, age, and sex: England and Wales (combined)\nDisability by sexual orientation, age, and sex: England and Wales (separate)\nSexual orientation by disability, age, and sex: England and Wales (combined)\nEconomic activity by sexual orientation, age, and sex: England and Wales (combined)\nEconomic activity by sexual orientation, age, and sex: England and Wales (separate)\nEconomic inactivity by sexual orientation, age, and sex: England and Wales (combined)\nEconomic inactivity by sexual orientation, age, and sex: England and Wales (separate)\nOccupation by sexual orientation, age, and sex: England and Wales (combined)\nOccupation by sexual orientation, age, and sex: England and Wales (separate)\nSexual orientation by occupation, age, and sex: England and Wales (combined)\nNS-SEC by sexual orientation, age, and sex: England and Wales (combined)\nNS-SEC by sexual orientation, age, and sex: England and Wales (separate)\nSexual orientation by NS-SEC, age, and sex: England and Wales (combined)\nHighest level of qualification by sexual orientation, age, and sex: England and Wales (combined)\nHighest level of qualification by sexual orientation, age, and sex: England and Wales (separate)\nChild family status by sexual orientation: England and Wales (combined)\nChild family status by sexual orientation: England and Wales (separate)\nFamily status by sexual orientation: England and Wales (combined)\nFamily status by sexual orientation: England and Wales (separate)\nLegal partnership status by sexual orientation, age, and sex: England and Wales (combined)\nLegal partnership status by sexual orientation, age, and sex: England and Wales (separate)\n\n\n\n\nGender modality\n\n\n\nGender modality\n\nGender modality by age and sex\nGender modality by disability\nGender modality by dwelling type\nGender modality by economic activity status\nGender modality by ethnic group\nGender modality by highest qualifications\nGender modality by hours worked\nGender modality by industry\nGender modality by legal partnership\nGender modality by NS-SEC\nGender modality by occupancy rating (bedrooms)\nGender modality by occupancy rating (rooms)\nGender modality by occupation\nGender modality by religion\nGender modality by tenure\nGender modality by unpaid carer status\n\n\n\nSpatial data\nIf you want to make maps, you will also need spatial data for the boundaries of the different regions.\n\nNorthern Ireland\n\nOSNI Open Data - Largescale Boundaries - Local Government Districts\n\n\n\nEngland & Wales\n\nLower layer Super Output Areas: Census 2021 Boundaries\nPopulation and household estimates, England and Wales: Census 2021: Figure 3 datadownload.xlsx"
+  },
+  {
+    "objectID": "examples/barchart-genmod-age.html",
+    "href": "examples/barchart-genmod-age.html",
+    "title": "Bar chart of gender modality by age",
+    "section": "",
+    "text": "Load required packages:\nlibrary(tidyverse)\nlibrary(ggview)\nlibrary(ggtext)\nlibrary(scales)\nlibrary(glue)"
+  },
+  {
+    "objectID": "examples/barchart-genmod-age.html#prepare-the-data",
+    "href": "examples/barchart-genmod-age.html#prepare-the-data",
+    "title": "Bar chart of gender modality by age",
+    "section": "Prepare the data",
+    "text": "Prepare the data\nLoad the data:\n\ngenmod_age_scot &lt;- read_csv(\"data/genmod_age_scot.csv\")\n\nThe first few lines look like:\n\n\n# A tibble: 6 × 3\n  age                         response                                         n\n  &lt;chr&gt;                       &lt;chr&gt;                                        &lt;dbl&gt;\n1 All people aged 16 and over Total                                       4.55e6\n2 All people aged 16 and over No: Not trans and does not have a trans hi… 4.26e6\n3 All people aged 16 and over Yes: Trans or has a trans history           2.00e4\n4 All people aged 16 and over Not answered                                2.69e5\n5 16 - 24                     Total                                       5.82e5\n6 16 - 24                     No: Not trans and does not have a trans hi… 5.38e5\n\n\nPrepare data for plotting:\n\nplot_data &lt;- genmod_age_scot |&gt;\n  filter(!str_starts(age, \"All people\"), response != \"Total\") |&gt;\n  mutate(age = factor(age, levels = c(\n    \"16 - 24\", \"25 - 34\", \"35 - 49\", \"50 - 64\", \"65 and over\"\n  )))\n\nsummary_data &lt;- genmod_age_scot |&gt;\n  filter(str_starts(age, \"All people\"))\n\ntot_percent &lt;- round(100 * (summary_data |&gt;\n  filter(response == \"Yes: Trans or has a trans history\") |&gt;\n  pull(n)) / (summary_data |&gt;\n  filter(response == \"Total\") |&gt;\n  pull(n)), 2)"
+  },
+  {
+    "objectID": "examples/barchart-genmod-age.html#plot-preparation",
+    "href": "examples/barchart-genmod-age.html#plot-preparation",
+    "title": "Bar chart of gender modality by age",
+    "section": "Plot preparation",
+    "text": "Plot preparation\nSave colours as variables:\n\nhighlight_col &lt;- \"#880659\"\nbg_col &lt;- \"white\"\n\n\n\n\n\n\n\nTipTip with Title\n\n\n\nUse ggview to preview your plots at the desired size and resolution by adding the following to the end of your ggplot2 call:\n\n+\n  canvas(\n    width = 7, height = 5,\n    units = \"in\", bg = bg_col,\n    dpi = 300\n  )"
+  },
+  {
+    "objectID": "examples/barchart-genmod-age.html#create-the-bar-chart",
+    "href": "examples/barchart-genmod-age.html#create-the-bar-chart",
+    "title": "Bar chart of gender modality by age",
+    "section": "Create the bar chart",
+    "text": "Create the bar chart\n\nVersion 1\n\nggplot(\n  data = plot_data,\n  mapping = aes(x = age, y = n, fill = response)\n) +\n  geom_col()\n\n\n\n\n\n\n\n\n\n\nVersion 2\n\nggplot(\n  data = plot_data,\n  mapping = aes(x = age, y = n, fill = str_wrap(response, 25))\n) +\n  geom_col(position = \"fill\") +\n  scale_fill_manual(values = c(\"grey80\", \"grey50\", highlight_col)) +\n  theme_minimal() +\n  theme(\n    legend.position = \"top\",\n    legend.title = element_blank(),\n    legend.text = element_text(vjust = 1)\n  )\n\n\n\n\n\n\n\n\n\n\nVersion 3\n\nggplot(\n  data = plot_data,\n  mapping = aes(x = age, y = n, fill = str_wrap(response, 30))\n) +\n  geom_col(position = \"fill\") +\n  scale_y_continuous(labels = label_percent()) +\n  scale_fill_manual(values = c(\"grey80\", \"grey50\", highlight_col)) +\n  labs(\n    title = glue(\"{tot_percent}% of Scotland's population identifies as trans\"),\n    subtitle = \"Percentage of each age group identifying as trans or having a trans history\",\n    caption = \"**Source**: Trans status or history by age (Scotland's Census 2022) from National Records of Scotland&lt;br&gt;**Graphic**: Nicola Rennie\",\n    x = NULL, y = NULL\n  ) +\n  coord_cartesian(expand = FALSE) +\n  theme_minimal() +\n  theme(\n    legend.position = \"top\",\n    legend.title = element_blank(),\n    legend.text = element_text(vjust = 1),\n    legend.key.spacing.x = unit(1, \"cm\")\n  )\n\n\n\n\n\n\n\n\n\n\nVersion 4\n\nggplot(\n  data = plot_data,\n  mapping = aes(x = age, y = n, fill = str_wrap(response, 30))\n) +\n  geom_col(position = \"fill\") +\n  scale_y_continuous(labels = label_percent()) +\n  scale_fill_manual(values = c(\"grey80\", \"grey50\", highlight_col)) +\n  labs(\n    title = glue(\"{tot_percent}% of Scotland's population identifies as trans\"),\n    subtitle = \"Percentage of each age group identifying as trans or having a trans history\",\n    caption = \"**Source**: Trans status or history by age (Scotland's Census 2022) from National Records of Scotland&lt;br&gt;**Graphic**: Nicola Rennie\",\n    x = NULL, y = NULL\n  ) +\n  coord_cartesian(expand = FALSE) +\n  theme_minimal() +\n  theme(\n    legend.position = \"top\",\n    legend.title = element_blank(),\n    legend.text = element_text(vjust = 1),\n    legend.key.spacing.x = unit(1, \"cm\"),\n    plot.title.position = \"plot\",\n    plot.caption.position = \"plot\",\n    plot.title = element_textbox_simple(face = \"bold\", margin = margin(b = 5)),\n    plot.subtitle = element_textbox_simple(margin = margin(b = 5)),\n    plot.caption = element_textbox_simple(margin = margin(t = 10)),\n    plot.margin = margin(10, 15, 10, 15)\n  )"
+  },
+  {
+    "objectID": "examples/barchart-genmod-age.html#save-the-plot",
+    "href": "examples/barchart-genmod-age.html#save-the-plot",
+    "title": "Bar chart of gender modality by age",
+    "section": "Save the plot",
+    "text": "Save the plot\n\nggsave(\"barchart.png\",\n  bg = bg_col,\n  height = 5, width = 7\n)\n\nIf you’ve used ggview, then assign the plot to a variable e.g. p and then do:\n\nsave_ggplot(\n  plot = p,\n  file = \"barchart.png\"\n)"
+  },
+  {
+    "objectID": "examples/beeswarm-orientation-health.html",
+    "href": "examples/beeswarm-orientation-health.html",
+    "title": "Beeswarm chart of health by sexual orientation",
+    "section": "",
+    "text": "Load required packages:\nlibrary(tidyverse)\nlibrary(ggview)\nlibrary(ggbeeswarm)\nlibrary(ggtext)"
+  },
+  {
+    "objectID": "examples/beeswarm-orientation-health.html#prepare-the-data",
+    "href": "examples/beeswarm-orientation-health.html#prepare-the-data",
+    "title": "Beeswarm chart of health by sexual orientation",
+    "section": "Prepare the data",
+    "text": "Prepare the data\nLoad the data:\n\ngeneral_health_ew &lt;- read_csv(\"data/additional-ew/general_health_ew.csv\")\n\nPrepare data for plotting by calculating the percentage of population in bad/very bad health by sexual orientation:\n\nplot_data &lt;- general_health_ew |&gt;\n  group_by(area_name, sexual_orientation) |&gt;\n  mutate(population = sum(n)) |&gt;\n  ungroup() |&gt;\n  filter(\n    health %in% c(\"Bad health\", \"Very bad health\"),\n    sexual_orientation != \"Does not apply\"\n  ) |&gt;\n  mutate(percentage = 100 * n / population) |&gt;\n  group_by(area_name, sexual_orientation) |&gt;\n  summarise(percentage = sum(percentage)) |&gt;\n  ungroup()"
+  },
+  {
+    "objectID": "examples/beeswarm-orientation-health.html#plot-preparation",
+    "href": "examples/beeswarm-orientation-health.html#plot-preparation",
+    "title": "Beeswarm chart of health by sexual orientation",
+    "section": "Plot preparation",
+    "text": "Plot preparation\nSave colours as variables:\n\nhighlight_col &lt;- \"#ff6b00\"\nbg_col &lt;- \"white\"\n\n\n\n\n\n\n\nTipTip with Title\n\n\n\nUse ggview to preview your plots at the desired size and resolution by adding the following to the end of your ggplot2 call:\n\n+\n  canvas(\n    width = 5, height = 7,\n    units = \"in\", bg = bg_col,\n    dpi = 300\n  )"
+  },
+  {
+    "objectID": "examples/beeswarm-orientation-health.html#create-the-chart",
+    "href": "examples/beeswarm-orientation-health.html#create-the-chart",
+    "title": "Beeswarm chart of health by sexual orientation",
+    "section": "Create the chart",
+    "text": "Create the chart\n\nVersion 1\n\nggplot(\n  data = plot_data,\n  mapping = aes(x = percentage, y = sexual_orientation)\n) +\n  geom_quasirandom() \n\n\n\n\n\n\n\n\n\n\nVersion 2\n\nggplot(\n  data = plot_data,\n  mapping = aes(x = percentage, y = sexual_orientation)\n) +\n  geom_quasirandom(\n    colour = highlight_col,\n    size = 0.7\n  ) +\n  theme_minimal() \n\n\n\n\n\n\n\n\n\n\nVersion 3\n\nggplot(\n  data = plot_data,\n  mapping = aes(x = percentage, y = sexual_orientation)\n) +\n  geom_quasirandom(\n    colour = highlight_col,\n    size = 0.7\n  ) +\n  labs(\n    title = \"People identifying as an *other sexual orientation* most likely to report bad or very bad health\",\n    subtitle = \"Percentage of population reporting bad or very bad health by sexual orientation\",\n    caption = \"**Source**: General health by sexual orientation from Office for National Statistics&lt;br&gt;**Graphic**: Nicola Rennie\",\n    x = \"Percentage\", y = NULL\n  ) +\n  theme_minimal() +\n  theme(\n    plot.title.position = \"plot\",\n    plot.caption.position = \"plot\"\n  ) \n\n\n\n\n\n\n\n\n\n\nVersion 4\n\nggplot(\n  data = plot_data,\n  mapping = aes(x = percentage, y = sexual_orientation)\n) +\n  geom_quasirandom(\n    colour = highlight_col,\n    size = 0.7\n  ) +\n  labs(\n    title = \"People identifying as an *other sexual orientation* most likely to report bad or very bad health\",\n    subtitle = \"Percentage of population in each local authority reporting bad or very bad health by sexual orientation\",\n    caption = \"**Source**: General health by sexual orientation from Office for National Statistics&lt;br&gt;**Graphic**: Nicola Rennie\",\n    x = \"Percentage\", y = NULL\n  ) +\n  scale_x_continuous(limits = c(0, 25), expand = expansion(0, 0)) +\n  scale_y_discrete(expand = expansion(add = c(0.5, 0.75))) +\n  theme_minimal() +\n  theme(\n    plot.title.position = \"plot\",\n    plot.caption.position = \"plot\",\n    plot.title = element_textbox_simple(face = \"bold\", margin = margin(b = 5)),\n    plot.subtitle = element_textbox_simple(margin = margin(b = 5)),\n    plot.caption = element_textbox_simple(margin = margin(t = 5)),\n    axis.title.x = element_text(hjust = 1, size = rel(0.9)),\n    plot.margin = margin(10, 15, 10, 10)\n  )\n\n\n\n\n\n\n\n\n\n\nVersion 5\nPrepare data where we:\n\nWant to order categories by median value\nWant to add a line showing median value\nWant to wrap long category labels\n\n\nplot_data$sexual_orientation &lt;- str_wrap(plot_data$sexual_orientation, 12)\nsummary_data &lt;- plot_data |&gt;\n  group_by(sexual_orientation) |&gt;\n  summarise(med_perc = median(percentage)) |&gt;\n  arrange(med_perc)\nplot_data$sexual_orientation &lt;- factor(plot_data$sexual_orientation,\n  levels = summary_data$sexual_orientation\n)\nsummary_data$sexual_orientation &lt;- factor(summary_data$sexual_orientation,\n  levels = summary_data$sexual_orientation\n)\n\nUpdate plot:\n\nggplot(\n  data = plot_data,\n  mapping = aes(x = percentage, y = 0)\n) +\n  geom_quasirandom(\n    colour = highlight_col,\n    size = 0.7\n  ) +\n  geom_segment(\n    data = summary_data,\n    mapping = aes(x = med_perc, y = -0.4, yend = 0.4),\n    colour = \"black\",\n    linewidth = 1\n  ) +\n  facet_wrap(vars(sexual_orientation), ncol = 1, strip.position = \"left\") +\n  labs(\n    title = \"People identifying as an *other sexual orientation* most likely to report bad or very bad health\",\n    subtitle = \"Percentage of population in each local authority reporting bad or very bad health by sexual orientation\",\n    caption = \"**Source**: General health by sexual orientation from Office for National Statistics&lt;br&gt;**Graphic**: Nicola Rennie\",\n    x = \"Percentage\", y = NULL\n  ) +\n  scale_x_continuous(limits = c(0, 25), expand = expansion(0, 0)) +\n  scale_y_continuous(expand = expansion(0.05, 0.05), breaks = 0) +\n  theme_minimal() +\n  theme(\n    plot.title.position = \"plot\",\n    plot.caption.position = \"plot\",\n    plot.title = element_textbox_simple(face = \"bold\", margin = margin(b = 5)),\n    plot.subtitle = element_textbox_simple(margin = margin(b = 5)),\n    plot.caption = element_textbox_simple(margin = margin(t = 5)),\n    axis.title.x = element_text(hjust = 1, size = rel(0.9)),\n    axis.text.y = element_blank(),\n    strip.text.y.left = element_text(angle = 0, hjust = 1),\n    panel.grid.minor.y = element_blank(),\n    plot.margin = margin(10, 15, 10, 10)\n  )"
+  },
+  {
+    "objectID": "examples/beeswarm-orientation-health.html#save-the-plot",
+    "href": "examples/beeswarm-orientation-health.html#save-the-plot",
+    "title": "Beeswarm chart of health by sexual orientation",
+    "section": "Save the plot",
+    "text": "Save the plot\n\nggsave(\"beeswarm.png\",\n  bg = bg_col,\n  height = 7, width = 5\n)\n\nIf you’ve used ggview, then assign the plot to a variable e.g. p and then do:\n\nsave_ggplot(\n  plot = p,\n  file = \"beeswarm.png\"\n)"
+  }
+]
