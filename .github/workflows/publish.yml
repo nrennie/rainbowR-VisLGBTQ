@@ -26,7 +26,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages(c("dplyr", "glue", "readr", "rmarkdown", "knitr"))
+          install.packages(c("tidyverse", "scales", "ggtext", "glue", "sf", "geojsonsf", "ggbeeswarm", "rmarkdown", "knitr"))
         shell: Rscript {0}
 
       - name: Render and Publish
