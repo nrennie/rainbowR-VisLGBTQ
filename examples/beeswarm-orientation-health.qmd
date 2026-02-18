@@ -1,12 +1,32 @@
+---
+title: "Beeswarm chart of health by sexual orientation"
+author: "Nicola Rennie"
+date: "2026-02-18"
+fig-width: 5
+fig-height: 7
+---
+
+Load required packages:
+
+```{r}
 library(tidyverse)
 library(ggview)
 library(ggbeeswarm)
 library(ggtext)
+```
 
+## Prepare the data
 
-# Data wrangling ----------------------------------------------------------
+Load the data:
 
-# Perc of population in bad/very bad health by sexual orientation
+```{r}
+general_health_ew <- read_csv("data/additional-ew/general_health_ew.csv")
+
+```
+
+Prepare data for plotting by calculating the percentage of population in bad/very bad health by sexual orientation:
+
+```{r}
 plot_data <- general_health_ew |>
   group_by(area_name, sexual_orientation) |>
   mutate(population = sum(n)) |>
@@ -19,29 +39,48 @@ plot_data <- general_health_ew |>
   group_by(area_name, sexual_orientation) |>
   summarise(percentage = sum(percentage)) |>
   ungroup()
+```
 
+## Plot preparation
 
-# Variables ---------------------------------------------------------------
+Save colours as variables:
 
+```{r}
 highlight_col <- "#ff6b00"
 bg_col <- "white"
+```
 
+::: {.callout-tip title="Tip with Title"}
 
-# Plot --------------------------------------------------------------------
+Use `ggview` to preview your plots at the desired size and resolution by adding the following to the end of your `ggplot2` call:
 
-# V1 ----
-ggplot(
-  data = plot_data,
-  mapping = aes(x = percentage, y = sexual_orientation)
-) +
-  geom_quasirandom() +
+```{r}
+#| eval: false
++
   canvas(
     width = 5, height = 7,
     units = "in", bg = bg_col,
     dpi = 300
   )
+```
 
-# V2 ----
+:::
+
+## Create the chart
+
+### Version 1
+
+```{r}
+ggplot(
+  data = plot_data,
+  mapping = aes(x = percentage, y = sexual_orientation)
+) +
+  geom_quasirandom() 
+```
+
+### Version 2
+
+```{r}
 ggplot(
   data = plot_data,
   mapping = aes(x = percentage, y = sexual_orientation)
@@ -50,14 +89,12 @@ ggplot(
     colour = highlight_col,
     size = 0.7
   ) +
-  theme_minimal() +
-  canvas(
-    width = 5, height = 7,
-    units = "in", bg = bg_col,
-    dpi = 300
-  )
+  theme_minimal() 
+```
 
-# V3 ----
+### Version 3
+
+```{r}
 ggplot(
   data = plot_data,
   mapping = aes(x = percentage, y = sexual_orientation)
@@ -76,14 +113,12 @@ ggplot(
   theme(
     plot.title.position = "plot",
     plot.caption.position = "plot"
-  ) +
-  canvas(
-    width = 5, height = 7,
-    units = "in", bg = bg_col,
-    dpi = 300
-  )
+  ) 
+```
 
-# V4 ----
+### Version 4
+
+```{r}
 ggplot(
   data = plot_data,
   mapping = aes(x = percentage, y = sexual_orientation)
@@ -109,19 +144,19 @@ ggplot(
     plot.caption = element_textbox_simple(margin = margin(t = 5)),
     axis.title.x = element_text(hjust = 1, size = rel(0.9)),
     plot.margin = margin(10, 15, 10, 10)
-  ) +
-  canvas(
-    width = 5, height = 7,
-    units = "in", bg = bg_col,
-    dpi = 300
   )
 
-# V5 ----
-# Want to order categories by median value
-# Want to add a line showing median value
-# Want to wrap long category labels
+```
 
-## Summary data ----
+### Version 5
+
+Prepare data where we: 
+
+* Want to order categories by median value
+* Want to add a line showing median value
+* Want to wrap long category labels
+
+```{r}
 plot_data$sexual_orientation <- str_wrap(plot_data$sexual_orientation, 12)
 summary_data <- plot_data |>
   group_by(sexual_orientation) |>
@@ -133,8 +168,11 @@ plot_data$sexual_orientation <- factor(plot_data$sexual_orientation,
 summary_data$sexual_orientation <- factor(summary_data$sexual_orientation,
   levels = summary_data$sexual_orientation
 )
+```
 
-## Plot ----
+Update plot:
+
+```{r}
 ggplot(
   data = plot_data,
   mapping = aes(x = percentage, y = 0)
@@ -170,17 +208,25 @@ ggplot(
     strip.text.y.left = element_text(angle = 0, hjust = 1),
     panel.grid.minor.y = element_blank(),
     plot.margin = margin(10, 15, 10, 10)
-  ) +
-  canvas(
-    width = 5, height = 7,
-    units = "in", bg = bg_col,
-    dpi = 300
-  ) -> p
+  ) 
+```
 
+## Save the plot
 
-# Save --------------------------------------------------------------------
+```{r}
+#| eval: false
+ggsave("beeswarm.png",
+  bg = bg_col,
+  height = 7, width = 5
+)
+```
 
+If you've used `ggview`, then assign the plot to a variable e.g. `p` and then do:
+
+```{r}
+#| eval: false
 save_ggplot(
   plot = p,
-  file = "example-plots/beeswarm.png"
+  file = "beeswarm.png"
 )
+```

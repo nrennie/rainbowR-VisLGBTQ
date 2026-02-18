@@ -6,7 +6,7 @@ library(ggtext)
 
 # Load data ---------------------------------------------------------------
 
-general_health_ew <- read_csv("data/additional_ew/general_health_ew.csv")
+general_health_ew <- read_csv("data/additional-ew/general_health_ew.csv")
 
 
 # Data wrangling ----------------------------------------------------------
@@ -92,7 +92,10 @@ ggplot(
 
 # Save --------------------------------------------------------------------
 
-save_ggplot(
-  plot = p,
-  file = "contributions/nicola-rennie/beeswarm.png"
-)
+if (interactive()) {
+  save_ggplot(
+    plot = p,
+    file = "contributions/nicola-rennie-beeswarm/beeswarm.png"
+  )
+}
+

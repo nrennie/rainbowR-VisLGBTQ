@@ -1,0 +1,69 @@
+project:
+  type: website
+  output-dir: docs
+  execute-dir: project
+  render:
+    - "*.qmd"
+    - "!contributions/*.qmd"
+    - "!contributions/*/*.qmd"
+    - "!contributions/*/*.Rmd"
+
+website:
+  title: "Visualising the UK’s LGBTQ+ population"
+  site-url: "https://nrennie.rbind.io/rainbowR-VisLGBTQ"
+  image: "images/featured.png"
+  favicon: "images/favicon.png"
+  twitter-card: true
+  open-graph: true
+  navbar:
+    search: true
+    pinned: true
+    title: false
+    tools:
+      - icon: github
+        href: https://github.com/nrennie/rainbowR-VisLGBTQ
+    left:
+      - text: Home
+        href: index.qmd
+      - text: Slides
+        menu:
+          - text: PowerPoint
+            href: slides.pptx
+      - text: Data
+        href: data.qmd
+      - text: Examples
+        menu:
+          - text: Bar chart of gender modality and sex
+            href: examples/barchart-genmod-and-sex.qmd
+          - text: Bar chart of gender modality by age
+            href: examples/barchart-genmod-age.qmd
+          - text: Map of sexual orientation in Northern Ireland
+            href: examples/map-orientation-ni.qmd
+          - text: Beeswarm chart of health by sexual orientation
+            href: examples/beeswarm-orientation-health.qmd
+      - text: Gallery
+        href: gallery.qmd
+
+format:
+  html:
+    theme: [flatly]
+    toc: true
+    toc-depth: 3
+    page-layout: full
+    include-in-header:
+      text: |
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+    include-after-body:
+      text: |
+        <script src="https://cdn.jsdelivr.net/gh/mcstudios/glightbox/dist/js/glightbox.min.js"></script>
+        <script>
+          const lightbox = GLightbox({
+            selector: '.glightbox'
+          });
+        </script>
+
+execute:
+  echo: true
+  eval: true
+  warning: false
+  message: false

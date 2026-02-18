@@ -4,7 +4,7 @@ library(readxl)
 
 # Scotland ----------------------------------------------------------------
 
-sexual_age_scot <- read_xlsx("raw-data/Scotland/sexual_age_scot.xlsx", skip = 11) |>
+sexual_age_scot <- read_xlsx("data/raw-data/Scotland/sexual_age_scot.xlsx", skip = 11) |>
   select(-1) |>
   rename(Sex = "...2", Age = "...3") |>
   fill(Sex, .direction = "down") |>
@@ -19,7 +19,7 @@ sexual_age_scot <- read_xlsx("raw-data/Scotland/sexual_age_scot.xlsx", skip = 11
   mutate(sex = if_else(sex == "All people aged 16 and over", "All", sex))
 write_csv(sexual_age_scot, "data/sexual_age_scot.csv")
 
-genmod_age_scot <- read_xlsx("raw-data/Scotland/genmod_age_scot.xlsx", skip = 11) |>
+genmod_age_scot <- read_xlsx("data/raw-data/Scotland/genmod_age_scot.xlsx", skip = 11) |>
   select(-1) |>
   rename(Age = "...2") |>
   filter(row_number() != 1) |>
@@ -35,7 +35,7 @@ write_csv(genmod_age_scot, "data/genmod_age_scot.csv")
 
 # Northern Ireland --------------------------------------------------------
 
-sexual_age_ni_raw1 <- read_xlsx("raw-data/Northern Ireland/sexual_age_ni.xlsx",
+sexual_age_ni_raw1 <- read_xlsx("data/raw-data/Northern Ireland/sexual_age_ni.xlsx",
   sheet = 2, skip = 8
 ) |>
   filter(row_number() <= 12) |>
@@ -53,7 +53,7 @@ sexual_age_ni_raw1 <- read_xlsx("raw-data/Northern Ireland/sexual_age_ni.xlsx",
   ) |>
   mutate(age = str_replace(age, "All usual residents", "Usual residents"))
 
-sexual_age_ni_raw2 <- read_xlsx("raw-data/Northern Ireland/sexual_age_ni.xlsx",
+sexual_age_ni_raw2 <- read_xlsx("data/raw-data/Northern Ireland/sexual_age_ni.xlsx",
   sheet = 2, skip = 23
 ) |>
   drop_na() |>
@@ -84,7 +84,7 @@ write_csv(sexual_age_ni, "data/sexual_age_ni.csv")
 
 # England & Wales ---------------------------------------------------------
 
-sexual_genmod_ew <- read_csv("raw-data/England and Wales/sexual_genmod.csv") |>
+sexual_genmod_ew <- read_csv("data/raw-data/England and Wales/sexual_genmod.csv") |>
   select(
     area_code = `Lower tier local authorities Code`,
     area_name = `Lower tier local authorities`,
@@ -95,7 +95,7 @@ sexual_genmod_ew <- read_csv("raw-data/England and Wales/sexual_genmod.csv") |>
 write_csv(sexual_genmod_ew, "data/sexual_genmod_ew.csv")
 
 # Population data
-population_ew <- read_xlsx("raw-data/England and Wales/lsoa_population.xlsx", skip = 2) |>
+population_ew <- read_xlsx("data/spatial-data/England and Wales/lsoa_population.xlsx", skip = 2) |>
   select(
     area_code = `LA code`,
     area_name = `LA name`,
@@ -104,7 +104,7 @@ population_ew <- read_xlsx("raw-data/England and Wales/lsoa_population.xlsx", sk
 write_csv(population_ew, "data/population_ew.csv")
 
 # General health
-general_health_ew <- read_csv("raw-data/England and Wales/Sexual orientation/sexual_general_health.csv") |>
+general_health_ew <- read_csv("data/raw-data/England and Wales/Sexual orientation/sexual_general_health.csv") |>
   select(
     area_code = `Lower tier local authorities Code`,
     area_name = `Lower tier local authorities`,
@@ -114,4 +114,4 @@ general_health_ew <- read_csv("raw-data/England and Wales/Sexual orientation/sex
   ) |>
   left_join(population_ew, by = c("area_code", "area_name")) |>
   mutate(percentage = 100 * n / population)
-write_csv(general_health_ew, "data/additional_ew/general_health_ew.csv")
+write_csv(general_health_ew, "data/additional-ew/general_health_ew.csv")
