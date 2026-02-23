@@ -32,7 +32,7 @@
     "href": "examples/map-orientation-ni.html#plot-preparation",
     "title": "Map of sexual orientation in Northern Ireland",
     "section": "Plot preparation",
-    "text": "Plot preparation\nSave colours as variables:\n\ntext_col &lt;- \"#ffffd9\"\nbg_col &lt;- \"#051338\"\n\n\n\n\n\n\n\nTipTip with Title\n\n\n\nUse ggview to preview your plots at the desired size and resolution by adding the following to the end of your ggplot2 call:\n\n+\n  canvas(\n    width = 5, height = 7,\n    units = \"in\", bg = bg_col,\n    dpi = 300\n  )"
+    "text": "Plot preparation\nSave colours as variables:\n\ntext_col &lt;- \"#ffffd9\"\nbg_col &lt;- \"#051338\"\n\n\n\n\n\n\n\nTip\n\n\n\nUse ggview to preview your plots at the desired size and resolution by adding the following to the end of your ggplot2 call:\n\n+\n  canvas(\n    width = 5, height = 7,\n    units = \"in\", bg = bg_col,\n    dpi = 300\n  )"
   },
   {
     "objectID": "examples/map-orientation-ni.html#create-the-map",
@@ -74,7 +74,7 @@
     "href": "data.html#loading-data",
     "title": "Data",
     "section": "Loading data",
-    "text": "Loading data\nYou can load the main, pre-cleaned data sets using:\n\nlibrary(readr)\n\n# Scotland ----------------------------------------------------------------\n\nsexual_age_scot &lt;- read_csv(\"data/sexual_age_scot.csv\")\ngenmod_age_scot &lt;- read_csv(\"data/genmod_age_scot.csv\")\n\n\n# Northern Ireland --------------------------------------------------------\n\nsexual_age_ni &lt;- read_csv(\"data/sexual_age_ni.csv\")\n\n\n# England and Wales -------------------------------------------------------\n\nsexual_genmod_ew &lt;- read_csv(\"data/sexual_genmod_ew.csv\")\npopulation_ew &lt;- read_csv(\"data/population_ew.csv\")\n\n\n## Additional data --------------------------------------------------------\n\ngeneral_health_ew &lt;- read_csv(\"data/additional_ew/general_health_ew.csv\")"
+    "text": "Loading data\nYou can load the main, pre-cleaned data sets using:\n\nlibrary(readr)\n\n# Scotland ----------------------------------------------------------------\n\nsexual_age_scot &lt;- read_csv(\"data/sexual_age_scot.csv\")\ngenmod_age_scot &lt;- read_csv(\"data/genmod_age_scot.csv\")\n\n\n# Northern Ireland --------------------------------------------------------\n\nsexual_age_ni &lt;- read_csv(\"data/sexual_age_ni.csv\")\n\n\n# England and Wales -------------------------------------------------------\n\nsexual_genmod_ew &lt;- read_csv(\"data/sexual_genmod_ew.csv\")\npopulation_ew &lt;- read_csv(\"data/population_ew.csv\")\n\n\n## Additional data --------------------------------------------------------\n\nsexual_general_health &lt;- read_csv(\"data/additional-ew/sexual_general_health.csv\")"
   },
   {
     "objectID": "data.html#raw-data-sources",
@@ -102,7 +102,7 @@
     "href": "examples/barchart-genmod-age.html#plot-preparation",
     "title": "Bar chart of gender modality by age",
     "section": "Plot preparation",
-    "text": "Plot preparation\nSave colours as variables:\n\nhighlight_col &lt;- \"#880659\"\nbg_col &lt;- \"white\"\n\n\n\n\n\n\n\nTipTip with Title\n\n\n\nUse ggview to preview your plots at the desired size and resolution by adding the following to the end of your ggplot2 call:\n\n+\n  canvas(\n    width = 7, height = 5,\n    units = \"in\", bg = bg_col,\n    dpi = 300\n  )"
+    "text": "Plot preparation\nSave colours as variables:\n\nhighlight_col &lt;- \"#880659\"\nbg_col &lt;- \"white\"\n\n\n\n\n\n\n\nTip\n\n\n\nUse ggview to preview your plots at the desired size and resolution by adding the following to the end of your ggplot2 call:\n\n+\n  canvas(\n    width = 7, height = 5,\n    units = \"in\", bg = bg_col,\n    dpi = 300\n  )"
   },
   {
     "objectID": "examples/barchart-genmod-age.html#create-the-bar-chart",
@@ -130,14 +130,14 @@
     "href": "examples/beeswarm-orientation-health.html#prepare-the-data",
     "title": "Beeswarm chart of health by sexual orientation",
     "section": "Prepare the data",
-    "text": "Prepare the data\nLoad the data:\n\ngeneral_health_ew &lt;- read_csv(\"data/additional-ew/general_health_ew.csv\")\n\nPrepare data for plotting by calculating the percentage of population in bad/very bad health by sexual orientation:\n\nplot_data &lt;- general_health_ew |&gt;\n  group_by(area_name, sexual_orientation) |&gt;\n  mutate(population = sum(n)) |&gt;\n  ungroup() |&gt;\n  filter(\n    health %in% c(\"Bad health\", \"Very bad health\"),\n    sexual_orientation != \"Does not apply\"\n  ) |&gt;\n  mutate(percentage = 100 * n / population) |&gt;\n  group_by(area_name, sexual_orientation) |&gt;\n  summarise(percentage = sum(percentage)) |&gt;\n  ungroup()"
+    "text": "Prepare the data\nLoad the data:\n\nsexual_general_health &lt;- read_csv(\"data/additional-ew/sexual_general_health.csv\")\n\nPrepare data for plotting by calculating the percentage of population in bad/very bad health by sexual orientation:\n\nplot_data &lt;- sexual_general_health |&gt;\n  group_by(area_name, sexual_orientation) |&gt;\n  mutate(population = sum(n)) |&gt;\n  ungroup() |&gt;\n  filter(\n    general_health %in% c(\"Bad health\", \"Very bad health\"),\n    sexual_orientation != \"Does not apply\"\n  ) |&gt;\n  mutate(percentage = 100 * n / population) |&gt;\n  group_by(area_name, sexual_orientation) |&gt;\n  summarise(percentage = sum(percentage)) |&gt;\n  ungroup()"
   },
   {
     "objectID": "examples/beeswarm-orientation-health.html#plot-preparation",
     "href": "examples/beeswarm-orientation-health.html#plot-preparation",
     "title": "Beeswarm chart of health by sexual orientation",
     "section": "Plot preparation",
-    "text": "Plot preparation\nSave colours as variables:\n\nhighlight_col &lt;- \"#ff6b00\"\nbg_col &lt;- \"white\"\n\n\n\n\n\n\n\nTipTip with Title\n\n\n\nUse ggview to preview your plots at the desired size and resolution by adding the following to the end of your ggplot2 call:\n\n+\n  canvas(\n    width = 5, height = 7,\n    units = \"in\", bg = bg_col,\n    dpi = 300\n  )"
+    "text": "Plot preparation\nSave colours as variables:\n\nhighlight_col &lt;- \"#ff6b00\"\nbg_col &lt;- \"white\"\n\n\n\n\n\n\n\nTip\n\n\n\nUse ggview to preview your plots at the desired size and resolution by adding the following to the end of your ggplot2 call:\n\n+\n  canvas(\n    width = 5, height = 7,\n    units = \"in\", bg = bg_col,\n    dpi = 300\n  )"
   },
   {
     "objectID": "examples/beeswarm-orientation-health.html#create-the-chart",
