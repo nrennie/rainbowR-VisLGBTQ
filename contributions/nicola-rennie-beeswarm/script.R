@@ -6,13 +6,13 @@ library(ggtext)
 
 # Load data ---------------------------------------------------------------
 
-general_health_ew <- read_csv("data/additional-ew/general_health_ew.csv")
+sexual_general_health <- read_csv("data/additional-ew/sexual_general_health.csv")
 
 
 # Data wrangling ----------------------------------------------------------
 
 ## Perc of population in bad/very bad health by sexual orientation ----
-plot_data <- general_health_ew |>
+plot_data <- sexual_general_health |>
   group_by(area_name, sexual_orientation) |>
   mutate(population = sum(n)) |>
   ungroup() |>

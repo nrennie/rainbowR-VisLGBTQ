@@ -20,14 +20,13 @@ library(ggtext)
 Load the data:
 
 ```{r}
-general_health_ew <- read_csv("data/additional-ew/general_health_ew.csv")
-
+sexual_general_health <- read_csv("data/additional-ew/sexual_general_health.csv")
 ```
 
 Prepare data for plotting by calculating the percentage of population in bad/very bad health by sexual orientation:
 
 ```{r}
-plot_data <- general_health_ew |>
+plot_data <- sexual_general_health |>
   group_by(area_name, sexual_orientation) |>
   mutate(population = sum(n)) |>
   ungroup() |>

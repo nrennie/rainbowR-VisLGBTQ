@@ -1,5 +1,6 @@
 library(tidyverse)
 library(readxl)
+library(glue)
 
 
 # Scotland ----------------------------------------------------------------
@@ -95,7 +96,7 @@ sexual_genmod_ew <- read_csv("data/raw-data/England and Wales/sexual_genmod.csv"
 write_csv(sexual_genmod_ew, "data/sexual_genmod_ew.csv")
 
 # Population data
-population_ew <- read_xlsx("data/spatial-data/England and Wales/lsoa_population.xlsx", skip = 2) |>
+population_ew <- read_xlsx("data/spatial-data/lsoa_population.xlsx", skip = 2) |>
   select(
     area_code = `LA code`,
     area_name = `LA name`,
@@ -103,15 +104,173 @@ population_ew <- read_xlsx("data/spatial-data/England and Wales/lsoa_population.
   )
 write_csv(population_ew, "data/population_ew.csv")
 
-# General health
-general_health_ew <- read_csv("data/raw-data/England and Wales/Sexual orientation/sexual_general_health.csv") |>
+
+## Additional data --------------------------------------------------------
+
+process_ew_data <- function(fpath, type = "Sexual orientation") {
+  variable_name <- fpath |>
+    str_remove("sexual_") |>
+    str_remove("genmod_") |>
+    str_remove(".csv")
+
+  gen_sex_name <- type |>
+    str_to_lower() |>
+    str_replace_all(" ", "_")
+
+  full_fpath <- glue("data/raw-data/England and Wales/{type}/{fpath}")
+  data_ew <- read_csv(full_fpath, show_col_types = FALSE) |>
+    rename(
+      area_code = `Lower tier local authorities Code`,
+      area_name = `Lower tier local authorities`,
+      n = Observation
+    ) |>
+    select(-ends_with("Code", ignore.case = FALSE)) |>
+    select(area_code, area_name,
+           {{gen_sex_name}} := starts_with(type),
+           {{variable_name}} := starts_with(variable_name),
+           n) |>
+    left_join(population_ew, by = c("area_code", "area_name")) |>
+    mutate(percentage = 100 * n / population)
+  write_csv(data_ew, glue("data/additional-ew/{fpath}"))
+}
+
+# Sexual orientation
+orientation_files <- list.files("data/raw-data/England and Wales/Sexual orientation")
+orientation_drop_files <- c("sexual_age_sex.csv", "sexual_detailed geo.xlsx", "sexual_further_char.xlsx")
+orientation_files <- orientation_files[!orientation_files %in% orientation_drop_files]
+for (i in 1:length(orientation_files)) {
+  process_ew_data(orientation_files[i])
+}
+
+# Gender modality
+gender_files <- list.files("data/raw-data/England and Wales/Gender modality")
+for (i in 1:length(gender_files)) {
+  process_ew_data(gender_files[i], type = "Gender modality")
+}
+
+# Tricky files
+sexual_detailed_geo_ew <- read_xlsx(paste0("data/raw-data/England and Wales/Sexual orientation/", orientation_drop_files[2]), sheet = 2, skip = 1) |>
+  select(
+    area_code = `England and Wales code`,
+    area_name = `England and Wales`,
+    sexual_orientation = `Sexual orientation (9 categories)`,
+    n = Observation,
+    percentage = starts_with("Percentage")
+  ) |>
+  mutate(area_level = "England and Wales", .after = 2)
+sexual_detailed_geo_country <- read_xlsx(paste0("data/raw-data/England and Wales/Sexual orientation/", orientation_drop_files[2]), sheet = 3, skip = 1) |>
+  select(
+    area_code = `Countries code`,
+    area_name = Countries,
+    sexual_orientation = `Sexual orientation (9 categories)`,
+    n = Observation,
+    percentage = starts_with("Percentage")
+  ) |>
+  mutate(area_level = "Country", .after = 2)
+sexual_detailed_geo_region <- read_xlsx(paste0("data/raw-data/England and Wales/Sexual orientation/", orientation_drop_files[2]), sheet = 4, skip = 1) |>
+  select(
+    area_code = `Regions code`,
+    area_name = Regions,
+    sexual_orientation = `Sexual orientation (9 categories)`,
+    n = Observation,
+    percentage = starts_with("Percentage")
+  ) |>
+  mutate(area_level = "Region", .after = 2)
+sexual_detailed_geo_utla <- read_xlsx(paste0("data/raw-data/England and Wales/Sexual orientation/", orientation_drop_files[2]), sheet = 5, skip = 1) |>
+  select(
+    area_code = `Upper tier local authorities code`,
+    area_name = `Upper tier local authorities`,
+    sexual_orientation = `Sexual orientation (9 categories)`,
+    n = Observation,
+    percentage = starts_with("Percentage")
+  ) |>
+  mutate(area_level = "Upper Tier Local Authority", .after = 2) |>
+  mutate(n = as.numeric(n),
+         percentage = as.numeric(percentage))
+sexual_detailed_geo_ltla <- read_xlsx(paste0("data/raw-data/England and Wales/Sexual orientation/", orientation_drop_files[2]), sheet = 6, skip = 1) |>
+  select(
+    area_code = `Lower tier local authorities code`,
+    area_name = `Lower tier local authorities`,
+    sexual_orientation = `Sexual orientation (9 categories)`,
+    n = Observation,
+    percentage = starts_with("Percentage")
+  ) |>
+  mutate(area_level = "Lower Tier Local Authority", .after = 2) |>
+  mutate(n = as.numeric(n),
+         percentage = as.numeric(percentage))
+sexual_detailed_geo_nhs <- read_xlsx(paste0("data/raw-data/England and Wales/Sexual orientation/", orientation_drop_files[2]), sheet = 7, skip = 1) |>
+  select(
+    area_code = `NHS England regions code`,
+    area_name = `NHS England regions`,
+    sexual_orientation = `Sexual orientation (9 categories)`,
+    n = Observation,
+    percentage = starts_with("Percentage")
+  ) |>
+  mutate(area_level = "NHS England Region", .after = 2) |>
+  mutate(n = as.numeric(n),
+         percentage = as.numeric(percentage))
+
+sexual_detailed_geo_icb <- read_xlsx(paste0("data/raw-data/England and Wales/Sexual orientation/", orientation_drop_files[2]), sheet = 8, skip = 1) |>
+  select(
+    area_code = `Integrated care boards code`,
+    area_name = `Integrated care boards`,
+    sexual_orientation = `Sexual orientation (9 categories)`,
+    n = Observation,
+    percentage = starts_with("Percentage")
+  ) |>
+  mutate(area_level = "Integrated Care Board", .after = 2) |>
+  mutate(n = as.numeric(n),
+         percentage = as.numeric(percentage))
+
+sexual_detailed_geo_sicb <- read_xlsx(paste0("data/raw-data/England and Wales/Sexual orientation/", orientation_drop_files[2]), sheet = 9, skip = 1) |>
+  select(
+    area_code = `Sub integrated care board locations code`,
+    area_name = `Sub integrated care board locations`,
+    sexual_orientation = `Sexual orientation (9 categories)`,
+    n = Observation,
+    percentage = starts_with("Percentage")
+  ) |>
+  mutate(area_level = "Sub-integrated Care Board Location", .after = 2) |>
+  mutate(n = as.numeric(n),
+         percentage = as.numeric(percentage))
+
+sexual_detailed_geo_local <- read_xlsx(paste0("data/raw-data/England and Wales/Sexual orientation/", orientation_drop_files[2]), sheet = 10, skip = 1) |>
+  select(
+    area_code = `Local health boards code`,
+    area_name = `Local health boards`,
+    sexual_orientation = `Sexual orientation (9 categories)`,
+    n = Observation,
+    percentage = starts_with("Percentage")
+  ) |>
+  mutate(area_level = "Local Health Board", .after = 2) |>
+  mutate(n = as.numeric(n),
+         percentage = as.numeric(percentage))
+
+sexual_detailed_geo <- bind_rows(
+  sexual_detailed_geo_ew, sexual_detailed_geo_country,
+  sexual_detailed_geo_region, sexual_detailed_geo_utla,
+  sexual_detailed_geo_ltla, sexual_detailed_geo_nhs,
+  sexual_detailed_geo_icb, sexual_detailed_geo_sicb,
+  sexual_detailed_geo_local
+)
+write_csv(sexual_detailed_geo, "data/additional-ew/sexual_detailed_geo.csv")
+
+# LTLA by age and sex
+sexual_age_sex <- read_csv(paste0("data/raw-data/England and Wales/Sexual orientation/", orientation_drop_files[1])) |>
   select(
     area_code = `Lower tier local authorities Code`,
     area_name = `Lower tier local authorities`,
-    sexual_orientation = `Sexual orientation (6 categories)`,
-    health = `General health (6 categories)`,
-    n = Observation
+    sexual_orientation = `Sexual orientation (4 categories)`,
+    sex = `Sex (2 categories)`,
+    age = `Age (D) (8 categories)`,
+    n = Observation,
+    percentage = starts_with("Percentage")
   ) |>
-  left_join(population_ew, by = c("area_code", "area_name")) |>
-  mutate(percentage = 100 * n / population)
-write_csv(general_health_ew, "data/additional-ew/general_health_ew.csv")
+  mutate(area_level = "Lower Tier Local Authority", .after = 2)
+write_csv(sexual_age_sex, "data/additional-ew/sexual_age_sex.csv")
+
+# Other files that can be cleaned but aren't cleaned here due to time limitatipns
+sexual_further_char_1 <- read_xlsx(paste0("data/raw-data/England and Wales/Sexual orientation/", orientation_drop_files[3]), sheet = 5, skip = 4)
+
+
+
