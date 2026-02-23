@@ -59,7 +59,7 @@ highlight_col <- "#880659"
 bg_col <- "white"
 ```
 
-::: {.callout-tip title="Tip with Title"}
+::: {.callout-tip}
 
 Use `ggview` to preview your plots at the desired size and resolution by adding the following to the end of your `ggplot2` call:
 

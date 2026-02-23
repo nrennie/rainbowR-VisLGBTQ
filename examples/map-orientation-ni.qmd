@@ -50,7 +50,7 @@ text_col <- "#ffffd9"
 bg_col <- "#051338"
 ```
 
-::: {.callout-tip title="Tip with Title"}
+::: {.callout-tip}
 
 Use `ggview` to preview your plots at the desired size and resolution by adding the following to the end of your `ggplot2` call:
 

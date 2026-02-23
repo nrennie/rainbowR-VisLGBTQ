@@ -17,7 +17,7 @@ plot_data <- sexual_general_health |>
   mutate(population = sum(n)) |>
   ungroup() |>
   filter(
-    health %in% c("Bad health", "Very bad health"),
+    general_health %in% c("Bad health", "Very bad health"),
     sexual_orientation != "Does not apply"
   ) |>
   mutate(percentage = 100 * n / population) |>

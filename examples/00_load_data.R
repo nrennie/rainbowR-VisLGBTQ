@@ -19,7 +19,7 @@ population_ew <- read_csv("data/population_ew.csv")
 
 ## Additional data --------------------------------------------------------
 
-general_health_ew <- read_csv("data/additional_ew/general_health_ew.csv")
+sexual_general_health <- read_csv("data/additional-ew/sexual_general_health.csv")
 
 
 

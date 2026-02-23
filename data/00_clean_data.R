@@ -113,6 +113,10 @@ process_ew_data <- function(fpath, type = "Sexual orientation") {
     str_remove("genmod_") |>
     str_remove(".csv")
 
+  raw_var_name <- variable_name |>
+    str_replace_all("_", " ") |>
+    str_to_sentence()
+
   gen_sex_name <- type |>
     str_to_lower() |>
     str_replace_all(" ", "_")
@@ -127,7 +131,7 @@ process_ew_data <- function(fpath, type = "Sexual orientation") {
     select(-ends_with("Code", ignore.case = FALSE)) |>
     select(area_code, area_name,
            {{gen_sex_name}} := starts_with(type),
-           {{variable_name}} := starts_with(variable_name),
+           {{variable_name}} := starts_with(raw_var_name),
            n) |>
     left_join(population_ew, by = c("area_code", "area_name")) |>
     mutate(percentage = 100 * n / population)
